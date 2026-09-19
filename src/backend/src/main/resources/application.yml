@@ -1,0 +1,51 @@
+# EmployeeTransferPortal - baseline runtime configuration
+#
+# Secrets are NEVER committed. Every credential is read from an environment variable.
+# Required environment variables:
+#   ETP_DB_URL       e.g. jdbc:postgresql://localhost:5432/employee_transfer_portal
+#   ETP_DB_USERNAME
+#   ETP_DB_PASSWORD
+
+spring:
+  application:
+    name: employee-transfer-portal
+
+  datasource:
+    url: ${ETP_DB_URL:jdbc:postgresql://localhost:5432/employee_transfer_portal}
+    username: ${ETP_DB_USERNAME}
+    password: ${ETP_DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      pool-name: etp-pool
+      maximum-pool-size: 10
+      minimum-idle: 2
+
+  jpa:
+    # Schema is never generated from entities. A migration tool is selected by ADR
+    # before the first entity ships - see .ai-context/architecture.md open item #1.
+    hibernate:
+      ddl-auto: none
+    # Keep persistence sessions inside the service layer.
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 50
+        order_inserts: true
+        order_updates: true
+
+  jackson:
+    default-property-inclusion: non_null
+
+server:
+  port: ${ETP_SERVER_PORT:8080}
+  error:
+    # Never leak internal detail to callers.
+    include-message: never
+    include-stacktrace: never
+    include-binding-errors: never
+
+logging:
+  level:
+    root: INFO
+    com.intglobal.etp: ${ETP_LOG_LEVEL:INFO}

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EmployeeTransferPortal Gate Review Dashboard</title>
+<!--
+  SINGLE SOURCE OF TRUTH for PR review records.
+  Instantiated from .ai-context/templates/gate-review-dashboard-design.html
+  Synchronized with:
+    .ai-context/specs/*.spec.md
+    .ai-context/pr_reviews/*.md
+    .ai-context/status.md
+    .ai-context/prompt_history.md
+  Last synchronized: 2026-09-19 12:37:43
+-->
+<style>
+  :root {
+    --bg: #f6f7f9; --surface: #ffffff; --border: #e2e5ea;
+    --text: #1a1d21; --text-muted: #5c6470; --accent: #2f5fd0;
+    --ok-bg: #e4f5ea; --ok-fg: #17603a;
+    --warn-bg: #fdf1dc; --warn-fg: #7a5310;
+    --block-bg: #fce8e8; --block-fg: #8c2020;
+    --idle-bg: #ebedf1; --idle-fg: #4a515c;
+    --radius: 10px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14161a; --surface: #1c1f25; --border: #2e333c;
+      --text: #e8eaee; --text-muted: #9aa3b0; --accent: #7ea2f5;
+      --ok-bg: #10331f; --ok-fg: #7fd7a3;
+      --warn-bg: #3a2c10; --warn-fg: #e6bd6b;
+      --block-bg: #3b1616; --block-fg: #f09a9a;
+      --idle-bg: #262b33; --idle-fg: #aab2bf;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #14161a; --surface: #1c1f25; --border: #2e333c;
+    --text: #e8eaee; --text-muted: #9aa3b0; --accent: #7ea2f5;
+    --ok-bg: #10331f; --ok-fg: #7fd7a3;
+    --warn-bg: #3a2c10; --warn-fg: #e6bd6b;
+    --block-bg: #3b1616; --block-fg: #f09a9a;
+    --idle-bg: #262b33; --idle-fg: #aab2bf;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font: 15px/1.55 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 32px 16px 64px; }
+  header.page { border-bottom: 1px solid var(--border); padding-bottom: 18px; margin-bottom: 26px; }
+  header.page h1 { margin: 0 0 6px; font-size: 24px; letter-spacing: -0.01em; }
+  header.page .meta { color: var(--text-muted); font-size: 13px; }
+  header.page .meta span + span::before { content: "\00b7"; margin: 0 8px; }
+  section { margin-bottom: 34px; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); margin: 0 0 12px; }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  .tile { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
+  .tile .value { font-size: 26px; font-weight: 650; font-variant-numeric: tabular-nums; }
+  .tile .label { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 600; white-space: nowrap; }
+  tbody tr:last-child td { border-bottom: 0; }
+  code { font-family: ui-monospace, SFMono-Regular, "Cascadia Code", Consolas, monospace; font-size: 0.9em; }
+  .badge { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+  .badge.approved { background: var(--ok-bg); color: var(--ok-fg); }
+  .badge.pending  { background: var(--warn-bg); color: var(--warn-fg); }
+  .badge.blocked  { background: var(--block-bg); color: var(--block-fg); }
+  .badge.idle     { background: var(--idle-bg); color: var(--idle-fg); }
+  article.review { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; margin-bottom: 12px; }
+  article.review h3 { margin: 0 0 4px; font-size: 16px; }
+  article.review .sub { color: var(--text-muted); font-size: 13px; margin-bottom: 12px; }
+  .criteria { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 4px 20px; margin: 0 0 12px; padding: 0; list-style: none; font-size: 13.5px; }
+  .criteria li { display: flex; justify-content: space-between; gap: 12px; padding: 3px 0; border-bottom: 1px dotted var(--border); }
+  .comment { border-left: 3px solid var(--accent); padding: 8px 0 8px 12px; margin-top: 10px; }
+  .comment .who { font-size: 12px; color: var(--text-muted); margin-bottom: 3px; }
+  ul.checklist { list-style: none; margin: 0; padding: 0; font-size: 14px; }
+  ul.checklist li { padding: 9px 14px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; gap: 14px; }
+  ul.checklist li:last-child { border-bottom: 0; }
+  footer.page { color: var(--text-muted); font-size: 12.5px; border-top: 1px solid var(--border); padding-top: 14px; }
+  @media (max-width: 640px) { .wrap { padding: 20px 16px 48px; } header.page h1 { font-size: 20px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="page">
+    <h1>EmployeeTransferPortal &mdash; Gate Review Dashboard</h1>
+    <div class="meta">
+      <span>Synchronized 2026-09-19 12:37:43</span>
+      <span>Gate 0: Vaibhaw Soni</span>
+      <span>Gate 1: Soumyadeep Adhikary</span>
+      <span>Gate 2: unassigned</span>
+    </div>
+  </header>
+
+  <section>
+    <h2>Summary</h2>
+    <div class="tiles">
+      <div class="tile"><div class="value">1</div><div class="label">Specs authored</div></div>
+      <div class="tile"><div class="value">1</div><div class="label">Awaiting Gate 1</div></div>
+      <div class="tile"><div class="value">0</div><div class="label">In development</div></div>
+      <div class="tile"><div class="value">0</div><div class="label">Awaiting Gate 2</div></div>
+      <div class="tile"><div class="value">0</div><div class="label">Released</div></div>
+      <div class="tile"><div class="value">5</div><div class="label">Specs not yet drafted</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Gate 0 &mdash; BRD Review</h2>
+    <div class="card scroll">
+      <table>
+        <thead>
+          <tr><th>Artifact</th><th>Status</th><th>Approver</th><th>Date</th><th>Review record</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>.ai-context/BRD.md</code> v1.5</td>
+            <td><span class="badge approved">Approved</span></td>
+            <td>Vaibhaw Soni<br><code>vaibhaw.soni@intglobal.com</code></td>
+            <td>2026-09-18 20:47:53</td>
+            <td><code>.ai-context/pr_reviews/BRD-20260918-200238.md</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <article class="review">
+      <h3>Gate 0 &mdash; BRD Baseline</h3>
+      <div class="sub">
+        Vaibhaw Soni &lt;vaibhaw.soni@intglobal.com&gt; &middot; 2026-09-18 20:47:53 &middot;
+        <span class="badge approved">Approved</span> &middot;
+        <span class="badge blocked">author &ne; reviewer WAIVED</span>
+      </div>
+      <ul class="criteria">
+        <li><span>Business Objective Clarity</span><strong>Passed</strong></li>
+        <li><span>Functional Scope Completeness</span><strong>Passed</strong></li>
+        <li><span>Actor Definitions &amp; Roles</span><strong>Passed</strong></li>
+        <li><span>Functional Requirements Breakdown</span><strong>Passed</strong></li>
+        <li><span>Non-Functional Requirements</span><strong>Passed</strong></li>
+        <li><span>Business Rules &amp; Logic</span><strong>Passed</strong></li>
+        <li><span>Assumptions &amp; Dependencies</span><strong>Passed</strong></li>
+        <li><span>Out-of-Scope Boundaries</span><strong>Passed</strong></li>
+        <li><span>Acceptance Criteria Definition</span><strong>Passed</strong></li>
+        <li><span>Architecture &amp; Module Feasibility</span><strong>Passed</strong></li>
+        <li><span>Spec Generation Readiness</span><strong>Ready</strong></li>
+      </ul>
+      <div class="comment">
+        <div class="who">Review description</div>
+        BRD baseline v1.2 approved. Source is an assessment brief carrying a genuine business requirement in sections 2-3; extraction is faithful and assessment scaffolding is correctly quarantined. 18 requirements traced to source, 6 derived. All 14 open questions ratified.
+      </div>
+      <div class="comment">
+        <div class="who">Governance waiver</div>
+        <strong>author &ne; reviewer waived, Gate 0 only.</strong> The approver authored the &sect;9 resolutions. 14 invented thresholds became binding without independent review. In force again at Gate 1 and Gate 2.
+      </div>
+    </article>
+  </section>
+
+  <section>
+    <h2>BRD Amendments</h2>
+    <article class="review">
+      <h3>AMD-01 &mdash; The org-data write path does not exist</h3>
+      <div class="sub">Ruled by Vaibhaw Soni &middot; 2026-09-19 12:26:07 &middot; <span class="badge approved">Resolved &mdash; Option A</span></div>
+      <div class="comment">
+        <div class="who">Ruling</div>
+        <code>employee-directory</code> publishes one narrow write operation, <code>applyTransfer</code>. <strong>OQ-05 confirmed</strong> &mdash; local ownership stands. <strong>OQ-03 narrowed</strong> &mdash; org-data update is an in-process call, not a stubbed external adapter; Payroll, IT and Facilities remain stubs. <strong>OQ-04 unchanged</strong> &mdash; still the hard gate, now genuinely protective.
+      </div>
+      <div class="comment">
+        <div class="who">Effects</div>
+        BRD-014 implementable &middot; ELIG-03 functional &middot; <code>orchestration</code> unblocked &middot; <code>employee-directory</code> coverage tier raised Utility 60% &rarr; Critical 80% (C-09) &middot; idempotency store added, opaque key with no FK (C-10) &middot; &sect;3 boundary rules intact.
+      </div>
+    </article>
+    <article class="review">
+      <h3>AMD-02 &mdash; When does the org-data change take effect?</h3>
+      <div class="sub">Ruled by Vaibhaw Soni &middot; 2026-09-19 12:37:43 &middot; <span class="badge approved">Resolved &mdash; Option A</span></div>
+      <div class="comment">
+        <div class="who">Ruling</div>
+        <strong>Apply immediately.</strong> Keeps the OQ-04 fan-out supplied with the new department and location &mdash; Option B was rejected because scheduling would leave Payroll, IT and Facilities reading stale data. The directory reports post-transfer values for ~30 days <strong>by design</strong>, pinned by <code>AC24</code>. <strong>C-12 carried to <code>approval</code></strong>: ELIG-03 must use <code>&lt;= today - 12 months</code>, never a between-range, or it fails open.
+      </div>
+    </article>
+  </section>
+
+  <section>
+    <h2>Active Spec Board</h2>
+    <div class="card scroll">
+      <table>
+        <thead>
+          <tr><th>Spec ID</th><th>Feature</th><th>Lifecycle status</th><th>Gate 1</th><th>Gate 2</th><th>Developer</th><th>BRD coverage</th></tr>
+        </thead>
+        <tbody>
+          <tr data-row="spec">
+            <td><code>employee-directory</code></td>
+            <td>Employee Directory &amp; Reference Data <em>(rev 4)</em></td>
+            <td>In Peer Review</td>
+            <td><span class="badge pending">Pending Review</span></td>
+            <td><span class="badge idle">Not Started</span></td>
+            <td>Vaibhaw Soni</td>
+            <td>BRD-002&ndash;004, 014; supports 013, 023</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Planned Specs &mdash; not yet drafted</h2>
+    <div class="card scroll">
+      <table>
+        <thead>
+          <tr><th>Spec ID</th><th>Feature</th><th>BRD coverage</th><th>Status</th><th>Depends on</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>transfer-request</code></td><td>Transfer Request Lifecycle</td><td>BRD-001&ndash;010, 019, 023</td><td><span class="badge idle">Not drafted</span></td><td><code>employee-directory</code></td></tr>
+          <tr><td><code>approval</code></td><td>Manager &amp; HR Approval</td><td>BRD-012, 013, 020, 021</td><td><span class="badge idle">Not drafted</span></td><td><code>employee-directory</code>, <code>transfer-request</code></td></tr>
+          <tr><td><code>orchestration</code></td><td>Downstream Orchestration</td><td>BRD-011, 014&ndash;017, 024</td><td><span class="badge idle">Not drafted</span></td><td><code>transfer-request</code>, <code>approval</code></td></tr>
+          <tr><td><code>notification</code></td><td>Employee Notification</td><td>BRD-018</td><td><span class="badge idle">Not drafted</span></td><td><code>transfer-request</code></td></tr>
+          <tr><td><code>audit-trail</code></td><td>Immutable Audit Trail</td><td>BRD-022</td><td><span class="badge idle">Not drafted</span></td><td><code>employee-directory</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Gate 1 &mdash; Pending Review</h2>
+    <article class="review">
+      <h3>Gate 1 &mdash; <code>employee-directory</code>: Employee Directory &amp; Reference Data</h3>
+      <div class="sub">
+        Assigned: Soumyadeep Adhikary &lt;soumyadeep@intglobal.com&gt; &middot;
+        Rev 4 submitted 2026-09-19 12:37:43 &middot;
+        <span class="badge pending">Pending Review</span> &middot;
+        <code>.ai-context/specs/employee-directory.spec.md</code>
+      </div>
+      <ul class="criteria">
+        <li><span>BRD Traceability &amp; Alignment</span><strong>Pending</strong></li>
+        <li><span>Requirement Completeness</span><strong>Pending</strong></li>
+        <li><span>Requirement Understanding</span><strong>Pending</strong></li>
+        <li><span>Functional Scope</span><strong>Pending</strong></li>
+        <li><span>Technical Approach/Design</span><strong>Pending</strong></li>
+        <li><span>Business Rules</span><strong>Pending</strong></li>
+        <li><span>Validations</span><strong>Pending</strong></li>
+        <li><span>Dependencies</span><strong>Pending</strong></li>
+        <li><span>Assumptions</span><strong>Pending</strong></li>
+        <li><span>Edge Cases</span><strong>Pending</strong></li>
+        <li><span>Acceptance Criteria &amp; Readiness</span><strong>Pending</strong></li>
+      </ul>
+      <div class="comment">
+        <div class="who">Decisions the reviewer must make</div>
+        1. Ratify the <code>employees</code> schema extension resolving consequence C-01 &mdash; four HR attributes added, versus narrowing eligibility rules ELIG-01/02/04/05.
+        2. Confirm the three list endpoints (API01&ndash;03) are legitimately derived from BRD-002&ndash;004 rather than invented scope.
+        3. Rule on <code>/api/v1</code> path versioning, currently undecided in the constitution.
+        4. Rule on the coverage tier &mdash; author proposes raising this module from Utility 60% to Critical 80% because it supplies authorization data.
+      </div>
+      <div class="comment">
+        <div class="who">Enforcement</div>
+        <strong>author &ne; reviewer is IN FORCE.</strong> The Gate 0 waiver does not extend here. Approval requires <code>git config user.email</code> = <code>soumyadeep@intglobal.com</code>. Current session identity is <code>vaibhaw.soni@intglobal.com</code> &mdash; approval from this session is hard-blocked.
+      </div>
+    </article>
+  </section>
+
+  <section>
+    <h2>Compliance Checks</h2>
+    <div class="card">
+      <ul class="checklist">
+        <li><span>BRD approved at Gate 0 before any spec drafting</span><span class="badge approved">Pass</span></li>
+        <li><span>Reviewer Git email matches the configured roster</span><span class="badge approved">Pass (Gate 0)</span></li>
+        <li><span>Role separation enforced (developer is not the approver)</span><span class="badge blocked">Waived at Gate 0</span></li>
+        <li><span>Every approved spec has a plan, tasks and test cases</span><span class="badge idle">N/A &mdash; no approved spec</span></li>
+        <li><span>Test suites green before Gate 2 approval</span><span class="badge idle">N/A</span></li>
+        <li><span>Dashboard synchronized with specs, pr_reviews, status and prompt_history</span><span class="badge approved">Pass</span></li>
+        <li><span>No absolute local paths recorded in repository artifacts</span><span class="badge approved">Pass</span></li>
+        <li><span>No open Sev-1 / Sev-2 incidents blocking release</span><span class="badge approved">Pass</span></li>
+        <li><span>No open BRD amendments</span><span class="badge approved">Pass &mdash; AMD-01 and AMD-02 both resolved</span></li>
+        <li><span>Gate 2 reviewer assigned</span><span class="badge blocked">Fail &mdash; unassigned</span></li>
+        <li><span>Technical Lead assigned for Gate 1 technical concurrence</span><span class="badge blocked">Fail &mdash; unassigned</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <footer class="page">
+    Single source of truth for PR review records. Regenerated on every gate transition and synchronized with
+    <code>specs/</code>, <code>pr_reviews/</code>, <code>status.md</code> and <code>prompt_history.md</code>.
+  </footer>
+
+</div>
+</body>
+</html>

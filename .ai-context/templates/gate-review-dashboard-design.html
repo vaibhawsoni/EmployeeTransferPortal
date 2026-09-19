@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>INT Gate Review Dashboard</title>
+<!--
+  INT Gate Review Dashboard - TEMPLATE
+  Single source of truth for full PR review records.
+
+  Instantiation rules:
+    - Replace every {{PLACEHOLDER}} token.
+    - Duplicate <tr data-row="spec"> per spec; <article data-row="review"> per review record.
+    - Keep this file synchronized with:
+        .ai-context/specs/<slug>.spec.md
+        .ai-context/pr_reviews/GATE1-<slug>-*.md
+        .ai-context/pr_reviews/GATE2-<slug>-*.md
+        .ai-context/status.md
+        .ai-context/prompt_history.md
+    - Self-contained: no external scripts, stylesheets, fonts, or network calls.
+-->
+<style>
+  :root {
+    --bg: #f6f7f9;
+    --surface: #ffffff;
+    --border: #e2e5ea;
+    --text: #1a1d21;
+    --text-muted: #5c6470;
+    --accent: #2f5fd0;
+    --ok-bg: #e4f5ea;      --ok-fg: #17603a;
+    --warn-bg: #fdf1dc;    --warn-fg: #7a5310;
+    --block-bg: #fce8e8;   --block-fg: #8c2020;
+    --idle-bg: #ebedf1;    --idle-fg: #4a515c;
+    --radius: 10px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14161a;
+      --surface: #1c1f25;
+      --border: #2e333c;
+      --text: #e8eaee;
+      --text-muted: #9aa3b0;
+      --accent: #7ea2f5;
+      --ok-bg: #10331f;     --ok-fg: #7fd7a3;
+      --warn-bg: #3a2c10;   --warn-fg: #e6bd6b;
+      --block-bg: #3b1616;  --block-fg: #f09a9a;
+      --idle-bg: #262b33;   --idle-fg: #aab2bf;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #14161a;
+    --surface: #1c1f25;
+    --border: #2e333c;
+    --text: #e8eaee;
+    --text-muted: #9aa3b0;
+    --accent: #7ea2f5;
+    --ok-bg: #10331f;     --ok-fg: #7fd7a3;
+    --warn-bg: #3a2c10;   --warn-fg: #e6bd6b;
+    --block-bg: #3b1616;  --block-fg: #f09a9a;
+    --idle-bg: #262b33;   --idle-fg: #aab2bf;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 15px/1.55 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 32px 16px 64px; }
+
+  header.page { border-bottom: 1px solid var(--border); padding-bottom: 18px; margin-bottom: 26px; }
+  header.page h1 { margin: 0 0 6px; font-size: 24px; letter-spacing: -0.01em; }
+  header.page .meta { color: var(--text-muted); font-size: 13px; }
+  header.page .meta span + span::before { content: "\00b7"; margin: 0 8px; }
+
+  section { margin-bottom: 34px; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); margin: 0 0 12px; }
+
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  .tile { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
+  .tile .value { font-size: 26px; font-weight: 650; font-variant-numeric: tabular-nums; }
+  .tile .label { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 600; white-space: nowrap; }
+  tbody tr:last-child td { border-bottom: 0; }
+  code { font-family: ui-monospace, SFMono-Regular, "Cascadia Code", Consolas, monospace; font-size: 0.9em; }
+
+  .badge {
+    display: inline-block; padding: 2px 9px; border-radius: 999px;
+    font-size: 12px; font-weight: 600; white-space: nowrap;
+  }
+  .badge.approved { background: var(--ok-bg);    color: var(--ok-fg); }
+  .badge.pending  { background: var(--warn-bg);  color: var(--warn-fg); }
+  .badge.blocked  { background: var(--block-bg); color: var(--block-fg); }
+  .badge.idle     { background: var(--idle-bg);  color: var(--idle-fg); }
+
+  article.review { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; margin-bottom: 12px; }
+  article.review h3 { margin: 0 0 4px; font-size: 16px; }
+  article.review .sub { color: var(--text-muted); font-size: 13px; margin-bottom: 12px; }
+  .criteria { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 4px 20px; margin: 0 0 12px; padding: 0; list-style: none; font-size: 13.5px; }
+  .criteria li { display: flex; justify-content: space-between; gap: 12px; padding: 3px 0; border-bottom: 1px dotted var(--border); }
+  .comment { border-left: 3px solid var(--accent); padding: 8px 0 8px 12px; margin-top: 10px; }
+  .comment .who { font-size: 12px; color: var(--text-muted); margin-bottom: 3px; }
+
+  ul.checklist { list-style: none; margin: 0; padding: 0; font-size: 14px; }
+  ul.checklist li { padding: 9px 14px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; gap: 14px; }
+  ul.checklist li:last-child { border-bottom: 0; }
+
+  footer.page { color: var(--text-muted); font-size: 12.5px; border-top: 1px solid var(--border); padding-top: 14px; }
+
+  @media (max-width: 640px) { .wrap { padding: 20px 16px 48px; } header.page h1 { font-size: 20px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="page">
+    <h1>{{PROJECT_NAME}} &mdash; Gate Review Dashboard</h1>
+    <div class="meta">
+      <span>Generated {{GENERATED_AT}}</span>
+      <span>Gate 1: {{GATE1_REVIEWERS}}</span>
+      <span>Gate 2: {{GATE2_REVIEWERS}}</span>
+    </div>
+  </header>
+
+  <section>
+    <h2>Summary</h2>
+    <div class="tiles">
+      <div class="tile"><div class="value">{{COUNT_TOTAL_SPECS}}</div><div class="label">Total specs</div></div>
+      <div class="tile"><div class="value">{{COUNT_AWAITING_GATE1}}</div><div class="label">Awaiting Gate 1</div></div>
+      <div class="tile"><div class="value">{{COUNT_IN_DEVELOPMENT}}</div><div class="label">In development</div></div>
+      <div class="tile"><div class="value">{{COUNT_AWAITING_GATE2}}</div><div class="label">Awaiting Gate 2</div></div>
+      <div class="tile"><div class="value">{{COUNT_RELEASED}}</div><div class="label">Released</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Gate 0 &mdash; BRD Review</h2>
+    <div class="card scroll">
+      <table>
+        <thead>
+          <tr><th>Artifact</th><th>Status</th><th>Reviewer</th><th>Date</th><th>Review record</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>.ai-context/BRD.md</code></td>
+            <td><span class="badge {{GATE0_BADGE}}">{{GATE0_STATUS}}</span></td>
+            <td>{{GATE0_REVIEWER}}</td>
+            <td>{{GATE0_DATE}}</td>
+            <td><code>{{GATE0_RECORD_PATH}}</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Active Spec Board</h2>
+    <div class="card scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Spec ID</th><th>Feature</th><th>Lifecycle status</th>
+            <th>Gate 1</th><th>Gate 2</th><th>Developer</th><th>Spec file</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-row="spec">
+            <td><code>{{SPEC_ID}}</code></td>
+            <td>{{SPEC_NAME}}</td>
+            <td>{{SPEC_STATUS}}</td>
+            <td><span class="badge {{SPEC_GATE1_BADGE}}">{{SPEC_GATE1_STATUS}}</span></td>
+            <td><span class="badge {{SPEC_GATE2_BADGE}}">{{SPEC_GATE2_STATUS}}</span></td>
+            <td>{{SPEC_DEVELOPER}}</td>
+            <td><code>.ai-context/specs/{{SPEC_ID}}.spec.md</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Review Records &amp; Approval Comments</h2>
+
+    <article class="review" data-row="review">
+      <h3>Gate {{REVIEW_GATE}} &mdash; {{REVIEW_SPEC_ID}}: {{REVIEW_SPEC_NAME}}</h3>
+      <div class="sub">
+        {{REVIEW_REVIEWER_NAME}} &lt;{{REVIEW_REVIEWER_EMAIL}}&gt; &middot;
+        {{REVIEW_DATETIME}} &middot;
+        <span class="badge {{REVIEW_BADGE}}">{{REVIEW_STATUS}}</span> &middot;
+        <code>{{REVIEW_RECORD_PATH}}</code>
+      </div>
+
+      <ul class="criteria">
+        <li><span>{{CRITERION_NAME}}</span><strong>{{CRITERION_RESULT}}</strong></li>
+      </ul>
+
+      <div class="comment">
+        <div class="who">Review description</div>
+        {{REVIEW_DESCRIPTION}}
+      </div>
+      <div class="comment">
+        <div class="who">Review comments</div>
+        {{REVIEW_COMMENTS}}
+      </div>
+    </article>
+
+  </section>
+
+  <section>
+    <h2>Compliance Checks</h2>
+    <div class="card">
+      <ul class="checklist">
+        <li><span>BRD approved at Gate 0 before any spec drafting</span><span class="badge {{CHK_GATE0_BADGE}}">{{CHK_GATE0}}</span></li>
+        <li><span>Reviewer Git email matches the configured roster</span><span class="badge {{CHK_EMAIL_BADGE}}">{{CHK_EMAIL}}</span></li>
+        <li><span>Role separation enforced (developer is not the approver)</span><span class="badge {{CHK_ROLE_BADGE}}">{{CHK_ROLE}}</span></li>
+        <li><span>Every approved spec has a plan, tasks and test cases</span><span class="badge {{CHK_ARTIFACTS_BADGE}}">{{CHK_ARTIFACTS}}</span></li>
+        <li><span>Test suites green before Gate 2 approval</span><span class="badge {{CHK_TESTS_BADGE}}">{{CHK_TESTS}}</span></li>
+        <li><span>Dashboard synchronized with specs, pr_reviews, status and prompt_history</span><span class="badge {{CHK_SYNC_BADGE}}">{{CHK_SYNC}}</span></li>
+        <li><span>No absolute local paths recorded in repository artifacts</span><span class="badge {{CHK_PATHS_BADGE}}">{{CHK_PATHS}}</span></li>
+        <li><span>No open Sev-1 / Sev-2 incidents blocking release</span><span class="badge {{CHK_INCIDENTS_BADGE}}">{{CHK_INCIDENTS}}</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <footer class="page">
+    Badge classes: <code>approved</code> &middot; <code>pending</code> &middot; <code>blocked</code> &middot; <code>idle</code>.
+    This dashboard is the single source of truth for full PR review records and must be regenerated
+    on every gate transition.
+  </footer>
+
+</div>
+</body>
+</html>
