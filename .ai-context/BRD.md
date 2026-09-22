@@ -4,18 +4,16 @@
 
 | Field | Value |
 |---|---|
-| Status | **APPROVED** (Gate 0, 2026-09-18 20:47:53) · ✅ AMD-01 and AMD-02 both resolved · **no open amendments** |
+| Status | **PENDING** (Gate 0 Review Required) · ✅ AMD-01 and AMD-02 both resolved · **no open amendments** |
 | Version | 1.5 |
 | Ingested | 2026-09-18 · Open questions resolved 2026-09-18 |
 | Source Document | `docs/Requirement for SDD.docx` |
 | Source Title | "SDD Developer Assessment — Employee Internal Transfer Digital Journey" |
-| Gate 0 Approver | Vaibhaw Soni (vaibhaw.soni@intglobal.com) — approved |
-| Gate 0 Review Record | `.ai-context/pr_reviews/BRD-20260918-200238.md` |
+| Gate 0 Approver | TBD |
+| Gate 0 Review Record | None |
 | Author | Vaibhaw Soni (vaibhaw.soni@intglobal.com) |
 
-> **Gate 0 APPROVED — spec generation is UNBLOCKED.** Approved by Vaibhaw Soni on 2026-09-18 20:47:53. Feature specs may now be drafted under `int-sdd-lifecycle`.
->
-> ⚠ **Approved under a governance waiver.** The approver is also the author of the §9 resolutions, so `author ≠ reviewer` was waived at Gate 0 only. Those resolutions received no independent review. See `.ai-context/pr_reviews/BRD-20260918-200238.md` § Governance Waiver.
+> **Gate 0 PENDING — spec generation is BLOCKED.** Waiting for an independent reviewer (Technical Lead or Manager) to approve this baseline.
 >
 > ✅ **All amendments closed 2026-09-19.** **AMD-01** — Option A: `employee-directory` publishes a narrow `applyTransfer` write operation; OQ-05 confirmed, OQ-03 narrowed; BRD-014 implementable, ELIG-03 functional. **AMD-02** — Option A: the org-data change applies immediately, so the directory shows post-transfer values for ~30 days by design. Constraint **C-12** carries forward to the `approval` spec. See § Post-Approval Amendments.
 

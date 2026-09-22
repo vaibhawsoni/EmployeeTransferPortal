@@ -1,7 +1,7 @@
 # Project Status Board — EmployeeTransferPortal
 
 **Last Updated:** 2026-09-19 12:37
-**Current Phase:** Gate 1 pending — `employee-directory` rev 4, all BRD amendments closed
+**Current Phase:** Gate 0 pending — BRD review pending, spec generation on hold
 
 ---
 
@@ -11,9 +11,9 @@
 |---|---|---|
 | Project Setup | **Complete** | Control Plane, knowledge base, governance and execution layer created |
 | BRD Ingestion | **Complete** | `docs/Requirement for SDD.docx` ingested into `.ai-context/BRD.md`, now v1.1 with all 14 open questions resolved |
-| Gate 0 — BRD Review | **APPROVED** | AMD-01 and AMD-02 both resolved 2026-09-19. **No open amendments.** |
-| Spec Generation | **In progress** | 1 of 6 specs authored (`employee-directory`) |
-| Gate 1 — Spec Peer Review | **Pending Review** | `employee-directory` submitted 2026-09-18 21:02:21. Soumyadeep Adhikary. `author != reviewer` **in force**. |
+| Gate 0 — BRD Review | **Pending** | Reviewer unassigned. |
+| Spec Generation | Not started | Blocked until Gate 0 is approved. |
+| Gate 1 — Spec Peer Review | Not started | — |
 | Plan / Tasks / Test Cases | Not started | — |
 | TDD (RED then GREEN) | Not started | — |
 | Gate 2 — Code Review | Not started | **Reviewer unassigned** |
@@ -23,11 +23,9 @@
 
 ## Active Blocks
 
-### 1. ~~Spec generation blocked~~ — CLEARED 2026-09-18
+### 1. Spec generation blocked
 
-Gate 0 approved by Vaibhaw Soni at 20:47:53. `.ai-context/BRD.md` v1.2 is **Approved**. Specs may now be drafted via `int-sdd-lifecycle`.
-
-> ⚠ **Approved under a waiver.** The approver authored the §9 resolutions, so `author != reviewer` was waived at Gate 0. The 14 resolutions and 6 derived requirements became binding **without independent review**. Many carry author-invented thresholds unsupported by the source document. Table them at the first Gate 1 review.
+Gate 0 review is pending. Specs may not be drafted until `.ai-context/BRD.md` is approved by an independent reviewer.
 
 ### 2. Gate 2 reviewer unassigned
 `.ai-context/project_context.md` records Gate 2 as `TBD`. Approval rights are verified by Git email against that roster, so **no Gate 2 approval can be granted** and no feature can reach release.
@@ -69,7 +67,7 @@ Org-data change applies **immediately**, keeping the OQ-04 fan-out supplied with
 
 | Spec ID | Title | Status | Owner | Last Updated | Notes |
 |---|---|---|---|---|---|
-| `employee-directory` | Employee Directory & Reference Data | **In Peer Review** (rev 4) | Vaibhaw Soni | 2026-09-19 | Complete. 24 ACs, 29 tests. Owns BRD-002–004, 014. No BRD dependencies remain. |
+| `employee-directory` | Employee Directory & Reference Data | **Not Started** | Vaibhaw Soni | — | Waiting for Gate 0 approval. |
 
 ### Planned specs — not yet drafted
 
@@ -101,7 +99,7 @@ Slicing ratified 2026-09-18: six specs, one per module in `architecture.md` §9.
 
 | Gate | Reviewer | Email | Status |
 |---|---|---|---|
-| Gate 0 | Soumyadeep Adhikary | soumyadeep@intglobal.com | Assigned |
+| Gate 0 | TBD | TBD | **Unassigned** |
 | Gate 1 | Soumyadeep Adhikary | soumyadeep@intglobal.com | Assigned |
 | Gate 2 | TBD | TBD | **Unassigned** |
 
@@ -168,9 +166,9 @@ The Maven installation on this machine is the **source** distribution, not the b
 
 ## Next Actions
 
-**Blocking — Gate 1 review of `employee-directory` by Soumyadeep Adhikary.** Nothing downstream of this spec may proceed: no plan, no tasks, no test cases, no code.
+**Blocking — Gate 0 review.** Nothing downstream of this may proceed: no specs, no plan, no tasks, no test cases, no code.
 
-1. **Gate 1 review** — Soumyadeep Adhikary reviews `.ai-context/specs/employee-directory.spec.md` under Git identity `soumyadeep@intglobal.com`. Four decisions needed: C-01 schema extension, derived list endpoints, `/api/v1` versioning, coverage tier.
+1. **Gate 0 review** — Requires a Technical Lead or Manager to review and approve the BRD.
 2. **Record the migration ADR** (Flyway vs Liquibase) — hard-blocks TDD GREEN for this spec; no table can be created without it.
 3. **Record the API versioning ADR** — changes every endpoint path in this spec if rejected.
 4. **Gate 1 architecture approval** of the six-module proposal in `architecture.md` §9.7 — blocks creating `modules/employee-directory/` on disk.

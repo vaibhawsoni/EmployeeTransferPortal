@@ -18,14 +18,14 @@ Standard in force: **INT Engineering Guidelines — Specification-Driven Deliver
 |---|---|---|---|
 | Technical Lead / Architect | **TBD** | **TBD** | Owns this constitution; default Gate 2 code reviewer; technical concurrence at Gate 1 |
 | Senior Software Engineer / Spec Author | Vaibhaw Soni | vaibhaw.soni@intglobal.com | Default Spec Author for feature and retro-specs |
-| Gate 0 Approver & Project Owner | Vaibhaw Soni | vaibhaw.soni@intglobal.com | Owns the BRD baseline and Gate 0 approval |
+| Gate 0 Approver & Project Owner | TBD | TBD | Owns the BRD baseline and Gate 0 approval |
 | Project Manager / Tech Lead | Soumyadeep Adhikary | soumyadeep@intglobal.com | Gate 1 spec peer reviewer |
 
 The ingested BRD names **no stakeholders and no email addresses**, so no role conflict arose during ingestion and no roster entry was overwritten.
 
 ### Core governance rules
 
-- **Author ≠ Reviewer.** The Gate 1 reviewer is never the spec author. Satisfied at Gate 1 and Gate 2: Vaibhaw Soni authors, Soumyadeep Adhikary reviews. **Waived at Gate 0 on 2026-09-18** — Vaibhaw Soni owns Gate 0 and approved a baseline they authored. Logged in `.ai-context/pr_reviews/BRD-20260918-200238.md`.
+- **Author ≠ Reviewer.** The Gate 1 reviewer is never the spec author. Satisfied at Gate 1 and Gate 2: Vaibhaw Soni authors, Soumyadeep Adhikary reviews. **[Open]** — Gate 0 reviewer is TBD.
 - **Technical concurrence.** Gate 1 requires recorded TL technical concurrence whenever a spec touches Security Posture or Architectural Constraints. **[Open]** — no TL is assigned, so this cannot currently be recorded.
 - **Reviewer split.** Gate 0 = BRD baseline review. Gate 1 = intent, scope and BRD traceability. Gate 2 = technical evidence and code review.
 - **Identity enforcement.** Approval requires `git config user.email` to match the roster in `.ai-context/project_context.md`. Reviewer name is not evaluated. **[Open]** — Git is not yet initialised, so verification cannot run.

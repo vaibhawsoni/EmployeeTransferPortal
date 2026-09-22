@@ -46,7 +46,7 @@ Reviewer *name* is not evaluated. A mismatch blocks review and approval immediat
 
 | Gate | Reviewer | Email / User ID | Status |
 |---|---|---|---|
-| Gate 0 (BRD Review) | Vaibhaw Soni | vaibhaw.soni@intglobal.com | Assigned — corrected 2026-09-18 |
+| Gate 0 (BRD Review) | TBD | TBD | **Unassigned** |
 | Gate 1 (Spec Peer Review) | Soumyadeep Adhikary | soumyadeep@intglobal.com | Assigned |
 | Gate 2 (Code Review) | TBD | TBD | **Unassigned — must be filled before any Gate 2 approval** |
 
@@ -54,9 +54,7 @@ Reviewer *name* is not evaluated. A mismatch blocks review and approval immediat
 |---|---|---|
 | Developer / Project Owner | Vaibhaw Soni | vaibhaw.soni@intglobal.com |
 
-> **Gate 0 ownership corrected 2026-09-18.** Project setup recorded Gate 0 as Soumyadeep Adhikary by inference — setup only asked who owned Gate 1 and Gate 2, and Gate 0 was never confirmed. Gate 0 is owned by Vaibhaw Soni. Gate 1 remains with Soumyadeep Adhikary.
-
-> **Author = Gate 0 approver.** Vaibhaw Soni is both spec author and Gate 0 approver, so the `author ≠ reviewer` rule is **waived at Gate 0 only**, recorded explicitly in `.ai-context/pr_reviews/BRD-20260918-200238.md`. It remains in force at Gate 1 and Gate 2, where Soumyadeep Adhikary reviews independently.
+> **Gate 0 pending assignment.** Gate 0 reviewer needs to be confirmed (Manager / Technical Lead). The author of the BRD cannot approve Gate 0.
 
 ## BRD Status
 | Field | Value |
@@ -65,10 +63,10 @@ Reviewer *name* is not evaluated. A mismatch blocks review and approval immediat
 | Baseline | `.ai-context/BRD.md` v1.2 |
 | Requirements | BRD-001 to BRD-024 (18 extracted, 6 derived) |
 | Ingestion Workflow | `int-brd-ingestion` (complete) |
-| Gate 0 Status | **APPROVED** — Vaibhaw Soni, 2026-09-18 20:47:53 |
-| Gate 0 Record | `.ai-context/pr_reviews/BRD-20260918-200238.md` |
+| Gate 0 Status | **PENDING** — Reviewer unassigned |
+| Gate 0 Record | None |
 
-**Spec generation is UNBLOCKED.** Gate 0 approved under a recorded `author ≠ reviewer` waiver — see the review record.
+**Spec generation is BLOCKED.** Gate 0 must be approved by an independent reviewer before specs can be drafted.
 
 ## Governance Entry Points
 | Path | Role |
