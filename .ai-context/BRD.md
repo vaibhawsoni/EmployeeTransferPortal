@@ -745,29 +745,29 @@ Candidate module boundaries derived from this baseline, recorded in full in `.ai
 
 | Field | Value |
 |---|---|
-| Review Status | **APPROVED** |
-| Approver | Vaibhaw Soni (vaibhaw.soni@intglobal.com) |
-| Review Date/Time | 2026-09-18 20:47:53 |
-| Review Record | `.ai-context/pr_reviews/BRD-20260918-200238.md` |
-| Identity verification | **PASSED** — `git config user.email` matched the Gate 0 roster |
-| Governance waiver | `author ≠ reviewer` waived, Gate 0 only |
+| Review Status | **PENDING** |
+| Approver | TBD |
+| Review Date/Time | None |
+| Review Record | None |
+| Identity verification | Pending |
+| Governance waiver | None — `author ≠ reviewer` rule is strictly enforced |
 
-### Decisions recorded at Gate 0
+### Decisions Proposed for Gate 0
 
-| Item | Outcome |
+| Item | Status |
 |---|---|
-| OQ-01 to OQ-14 | **Ratified** as written in §9 |
-| BRD-019 to BRD-024 | **Ratified** as derived requirements |
-| Assumption A-03 | **Confirmed** — one request concerns one employee, who is the requester |
-| Consequences C-01 to C-07 | **Accepted** as open engineering work, not blockers |
-| Conflicts DC-01 to DC-06 | **Acknowledged** as defects in the source brief; no effect on the baseline |
-| Scope boundary (§2) and out-of-scope list (§8) | **Confirmed** |
+| OQ-01 to OQ-14 | **Pending Ratification** |
+| BRD-019 to BRD-024 | **Pending Ratification** as derived requirements |
+| Assumption A-03 | **Pending Confirmation** |
+| Consequences C-01 to C-07 | **Pending Acceptance** |
+| Conflicts DC-01 to DC-06 | **Pending Acknowledgement** |
+| Scope boundary (§2) and out-of-scope list (§8) | **Pending Confirmation** |
 
 ### Standing caveat carried forward
 
-A substantial number of values in §9 are author-invented with no support from `docs/Requirement for SDD.docx` — the eligibility thresholds (OQ-01), the effective-date window (OQ-06), every non-functional figure (OQ-10), the retention period and encryption requirement (OQ-11), and the retry policy (OQ-13). They were approved by their own author under the Gate 0 waiver and received no independent review.
+A substantial number of values in §9 are author-invented with no support from `docs/Requirement for SDD.docx` — the eligibility thresholds (OQ-01), the effective-date window (OQ-06), every non-functional figure (OQ-10), the retention period and encryption requirement (OQ-11), and the retry policy (OQ-13). 
 
-They are treated as **working decisions, revisable without a change request until first relied upon by an approved spec.** They should be tabled at the first Gate 1 review so Soumyadeep Adhikary sees them before anything is built against them.
+They are treated as **proposals only**. They must be explicitly reviewed and ratified by an independent Technical Lead at Gate 0 before they become binding.
 
 ### Gates still ahead
 
