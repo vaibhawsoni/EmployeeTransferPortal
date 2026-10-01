@@ -11,12 +11,12 @@
 |---|---|---|
 | Project Setup | **Complete** | Control Plane, knowledge base, governance and execution layer created |
 | BRD Ingestion | **Complete** | `docs/Requirement for SDD.docx` ingested into `.ai-context/BRD.md`, now v1.1 with all 14 open questions resolved |
-| Gate 0 — BRD Review | **Pending** | Reviewer unassigned. |
+| Gate 0 — BRD Review | **Pending** | Assigned to Supratim Jetty. |
 | Spec Generation | Not started | Blocked until Gate 0 is approved. |
 | Gate 1 — Spec Peer Review | Not started | — |
 | Plan / Tasks / Test Cases | Not started | — |
 | TDD (RED then GREEN) | Not started | — |
-| Gate 2 — Code Review | Not started | **Reviewer unassigned** |
+| Gate 2 — Code Review | Not started | Assigned to Supratim Jetty |
 | Release | Not started | — |
 
 ---
@@ -27,9 +27,8 @@
 
 Gate 0 review is pending. Specs may not be drafted until `.ai-context/BRD.md` is approved by an independent reviewer.
 
-### 2. Gate 2 reviewer unassigned
-`.ai-context/project_context.md` records Gate 2 as `TBD`. Approval rights are verified by Git email against that roster, so **no Gate 2 approval can be granted** and no feature can reach release.
-**To clear:** assign a Technical Lead / Senior Developer and update the roster in `project_context.md`.
+### 2. ~~Gate 2 reviewer unassigned~~ — RESOLVED 2026-10-01
+Gate 2 is assigned to Supratim Jetty in `project_context.md`.
 
 ### 3. Database migration tooling undecided
 `ddl-auto: none`, so the schema is never generated from entities. A migration tool (Flyway or Liquibase) must be selected via ADR **before the first entity ships**.
@@ -99,9 +98,9 @@ Slicing ratified 2026-09-18: six specs, one per module in `architecture.md` §9.
 
 | Gate | Reviewer | Email | Status |
 |---|---|---|---|
-| Gate 0 | TBD | TBD | **Unassigned** |
-| Gate 1 | Soumyadeep Adhikary | soumyadeep@intglobal.com | Assigned |
-| Gate 2 | TBD | TBD | **Unassigned** |
+| Gate 0 | Supratim Jetty | supratim.jetty@intglobal.com | Assigned |
+| Gate 1 | Supratim Jetty | supratim.jetty@intglobal.com | Assigned |
+| Gate 2 | Supratim Jetty | supratim.jetty@intglobal.com | Assigned |
 
 ---
 
@@ -172,6 +171,6 @@ The Maven installation on this machine is the **source** distribution, not the b
 2. **Record the migration ADR** (Flyway vs Liquibase) — hard-blocks TDD GREEN for this spec; no table can be created without it.
 3. **Record the API versioning ADR** — changes every endpoint path in this spec if rejected.
 4. **Gate 1 architecture approval** of the six-module proposal in `architecture.md` §9.7 — blocks creating `modules/employee-directory/` on disk.
-5. **Assign the Gate 2 reviewer.** Still unassigned; blocks all release.
+5. ~~**Assign the Gate 2 reviewer.** Still unassigned; blocks all release.~~ (Assigned 2026-10-01)
 6. **Assign a Technical Lead.** Gate 1 technical concurrence cannot be recorded without one, and this spec touches Security Posture (DP-01, DP-03) and Architectural Constraints.
 7. **Add JaCoCo** to `src/backend/pom.xml` so coverage floors are enforceable (consequence C-06).

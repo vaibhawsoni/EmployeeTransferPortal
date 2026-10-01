@@ -46,15 +46,15 @@ Reviewer *name* is not evaluated. A mismatch blocks review and approval immediat
 
 | Gate | Reviewer | Email / User ID | Status |
 |---|---|---|---|
-| Gate 0 (BRD Review) | TBD | TBD | **Unassigned** |
-| Gate 1 (Spec Peer Review) | Soumyadeep Adhikary | soumyadeep@intglobal.com | Assigned |
-| Gate 2 (Code Review) | TBD | TBD | **Unassigned — must be filled before any Gate 2 approval** |
+| Gate 0 (BRD Review) | Supratim Jetty | supratim.jetty@intglobal.com | Assigned |
+| Gate 1 (Spec Peer Review) | Supratim Jetty | supratim.jetty@intglobal.com | Assigned |
+| Gate 2 (Code Review) | Supratim Jetty | supratim.jetty@intglobal.com | Assigned |
 
 | Role | Person | Email |
 |---|---|---|
 | Developer / Project Owner | Vaibhaw Soni | vaibhaw.soni@intglobal.com |
 
-> **Gate 0 pending assignment.** Gate 0 reviewer needs to be confirmed (Manager / Technical Lead). The author of the BRD cannot approve Gate 0.
+> **Gate 0 assigned.** Gate 0 reviewer is Supratim Jetty.
 
 ## BRD Status
 | Field | Value |
@@ -63,7 +63,7 @@ Reviewer *name* is not evaluated. A mismatch blocks review and approval immediat
 | Baseline | `.ai-context/BRD.md` v1.2 |
 | Requirements | BRD-001 to BRD-024 (18 extracted, 6 derived) |
 | Ingestion Workflow | `int-brd-ingestion` (complete) |
-| Gate 0 Status | **PENDING** — Reviewer unassigned |
+| Gate 0 Status | **PENDING** — Assigned to Supratim Jetty |
 | Gate 0 Record | None |
 
 **Spec generation is BLOCKED.** Gate 0 must be approved by an independent reviewer before specs can be drafted.
